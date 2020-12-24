@@ -1,5 +1,6 @@
 package com.glyxybxhtxt.dataObject;
 
+
 public class Shy {
     private String ybid;
 

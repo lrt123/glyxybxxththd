@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServlet;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,6 +33,7 @@ import java.util.*;
  * Version: 1.0
  */
 @RestController
+
 public class BxdServlet {
 
     private static final long serialVersionUID = 1L;
@@ -163,27 +163,11 @@ public class BxdServlet {
         if(StringUtils.isAllBlank(jid, bid)){
             //自动分配审核员
 //            -------------------------------------------------------------------------
-            //1、先查出所有审核员
-            List<Shy> allshy = ss.selallqy();
-            //2、通过eid查询当前订单的所属校区
-            String bxdxq = es.selqybysbr(Integer.parseInt(eid)).getQy().getXq();
-            int setShy = 0;
-            for (Shy shy : allshy) {
-                //3、查看签到表里不同的审核员最近一次签到的校区 签到状态1或者2都行，并筛选出与当前订单区域匹配的
-                if( StringUtils.equals(bxdxq, qs.selectOptimalXqForShy(shy.getYbid()))){
-                    if (setShy == 0){
-                        bxd.setShy1(shy.getXm());
-                        setShy++;
-                    }else if (setShy == 1){
-                        bxd.setShy2(shy.getXm());
-                        break;
-                    }
-                }
-            }
-//            -------------------------------------------------------------------------
-
-            //自动派单
-            String zdpdResult = this.zdpd.zdpd(eid, bxlb);
+            //1、先查出所有符合当前校区的审核员
+            List<Shy> optimalShy = ss.selOptimalShy(Integer.parseInt(eid));
+            bxd.setShy1(optimalShy.get(0).getYbid());
+            bxd.setShy2(optimalShy.get(1).getYbid());
+            String zdpdResult = zdpd.zdpd(eid, bxlb);
             if(StringUtils.startsWith(zdpdResult, "6U@U6WX2^&nb6YIILV")){
                 bs.newbxdbysbr(bxd);
                 return new ResponseData(StringUtils.substringAfter(zdpdResult, "6U@U6WX2^&nb6YIILV"));
@@ -202,7 +186,7 @@ public class BxdServlet {
             //预约时间
             fgbxd.setYysj(yysj);
             //返工天数重算
-            fgbxd.setFgts("15");
+            fgbxd.setFgts(15);
             //新的报修内容
             fgbxd.setBxnr(bxnr);
 //            //申报时间重算
@@ -210,7 +194,7 @@ public class BxdServlet {
             //将单状态改为1
             fgbxd.setState(1);
             //工时清零
-            fgbxd.setGs("0");
+            fgbxd.setGs("");
             fgbxd.setShy1state(0);
             fgbxd.setShy2state(0);
             bs.fg(fgbxd);

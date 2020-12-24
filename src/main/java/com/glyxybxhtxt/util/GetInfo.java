@@ -84,7 +84,7 @@ public class GetInfo {
 			return;
 		}
 		HttpSession session = request.getSession();
-		
+
 		String me = u.me();
 		JSONObject mejson = JSONObject.fromObject(me);
 		JSONObject info = (JSONObject)mejson.get("info");
@@ -106,7 +106,7 @@ public class GetInfo {
 		session.setAttribute("me", m);
 		return;
 	}
-	
+
 	/**
 	 * 获得真实信息
 	 * @param request

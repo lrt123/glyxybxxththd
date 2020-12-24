@@ -24,8 +24,4 @@ public class PathUtil {
         if (!upload.exists()) upload.mkdirs();
         return upload.getAbsolutePath();
     }
-
-    public static void main(String[] args) {
-        System.out.println(PathUtil.getUploadPath());
-    }
 }

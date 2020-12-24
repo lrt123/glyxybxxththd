@@ -41,6 +41,7 @@ public class GetInfo {
 	{
 		Authorize au = new Authorize(appkey, appsecret);
 		String verify_request = request.getParameter("verify_request");
+
 		if(verify_request!=null&&!verify_request.isEmpty())
 		{
 			try {

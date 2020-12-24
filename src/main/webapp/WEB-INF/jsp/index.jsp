@@ -29,7 +29,7 @@
 	}
 	Object o2 = session.getAttribute("realme");
 	if(o2!=null){
-		response.sendRedirect("Login");
+		response.sendRedirect("/bx/Login");
 	}
 	
 	%>

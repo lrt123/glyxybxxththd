@@ -1,10 +1,13 @@
 package com.glyxybxhtxt.controller;
 
+import com.glyxybxhtxt.service.SfService;
 import com.glyxybxhtxt.util.RealMe;
 import com.glyxybxhtxt.util.UnicodeEncode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,19 +23,20 @@ public class Login {
 
     private static final long serialVersionUID = 1L;
 
-    @RequestMapping("/Login")
+    @Resource
+    SfService sfService;
+
+    @RequestMapping(value = "/Login",method = RequestMethod.GET)
     public void login(HttpServletRequest request, HttpServletResponse response){
         try{
             HttpSession session = request.getSession();
             RealMe rm = (RealMe) session.getAttribute("realme");
             if(rm==null || rm.getSid()==null){
-                response.sendRedirect("/index");
+                response.sendRedirect("/bx/index");
             }else{
                 String eid = (String) session.getAttribute("eid");
-                Service s = new Service();
                 String xm = UnicodeEncode.unicodeEncode(rm.getRealName());
-                System.out.println(xm);
-                int sf = s.getsf(rm.getM().getId());
+                int sf = sfService.getsf(rm.getM().getId());
                 if(eid!=null)
 //                    response.sendRedirect("http://localhost/bxqt/#/index?xm="+xm+"&xh="+rm.getSid()+"&head="+rm.getM().getHead()+"&sf="+sf+"&ybid="+rm.getM().getId()+"&eid="+eid);
                     response.sendRedirect("https://yiban.glmc.edu.cn/bxqt/#/index?xm="+xm+"&xh="+rm.getSid()+"&head="+rm.getM().getHead()+"&sf="+sf+"&ybid="+rm.getM().getId()+"&eid="+eid);
@@ -43,7 +47,7 @@ public class Login {
         }catch(Exception e){
             e.printStackTrace();
             try {
-                response.sendRedirect("/index");
+                response.sendRedirect("http://www.baidu.com");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

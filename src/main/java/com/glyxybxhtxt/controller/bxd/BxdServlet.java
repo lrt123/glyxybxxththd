@@ -36,8 +36,12 @@ import java.util.*;
 
 public class BxdServlet {
 
+    @Resource
+    PathUtil pathUtil;
+
     private static final long serialVersionUID = 1L;
-    private static String PATH_FOLDER = PathUtil.getUploadPath();
+    //    private static String PATH_FOLDER = PathUtil.getUploadPath();
+    private static String PATH_FOLDER = "";
     @Autowired
     private BxdService bs;
     @Autowired
@@ -71,7 +75,7 @@ public class BxdServlet {
                             @RequestParam(value = "pjnr", required = false) String pjnr, @RequestParam(value = "pjzj", required = false) String pjzj,
                             @RequestParam(value = "bid", required = false) String bid, @RequestParam(value = "jid", required = false) String jid,
                             @RequestParam(value = "hc", required = false) String hc) throws IOException {
-        System.out.println(sp);
+        PATH_FOLDER = pathUtil.getUploadPath();
         if (StringUtils.isWhitespace(op) || StringUtils.isEmpty(op) || StringUtils.isBlank(op))
             return new ResponseData("2");
         switch (op) {
@@ -113,6 +117,7 @@ public class BxdServlet {
     @ResponseBody
     //整合返工和新增工单，返工要传jdr的jid和本单的id
     private ResponseData filebase64(String eid, String xxdd, String yysj, String bxlb, String bxnr, String sbrsj, String sbrxh, String sbr, String tp, String sp, String jid, String bid, String hc) throws IOException {
+        PATH_FOLDER = pathUtil.getUploadPath();
         Bxd bxd = new Bxd();
         String filename = "";
         if (tp != null && tp.length() != 0) {

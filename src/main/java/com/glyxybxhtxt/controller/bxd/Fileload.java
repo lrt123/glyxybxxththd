@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -30,8 +31,13 @@ import java.util.List;
  */
 @Controller
 public class Fileload extends HttpServlet {
+
+    @Resource
+    PathUtil pathUtil;
+
     private static final long serialVersionUID = 1L;
-    private static String PATH_FOLDER = PathUtil.getUploadPath();
+    //    private static String PATH_FOLDER = PathUtil.getUploadPath();
+    private static String PATH_FOLDER = "";
     @Autowired
     private BxdService bs;
 

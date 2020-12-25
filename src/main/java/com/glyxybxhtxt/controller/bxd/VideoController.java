@@ -5,6 +5,7 @@ import com.glyxybxhtxt.util.PathUtil;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -18,10 +19,15 @@ import java.util.regex.Pattern;
 @RestController
 public class VideoController {
 
-    private static String PATH_FOLDER = PathUtil.getUploadPath();
+    @Resource
+    PathUtil pathUtil;
+
+//    private static String PATH_FOLDER = PathUtil.getUploadPath();
+    private static String PATH_FOLDER = "";
 
     @PostMapping(value = "/video-upload")
     public ResponseData uploadVideo(@RequestParam("file") MultipartFile file){
+        PATH_FOLDER = pathUtil.getUploadPath();
         if (file.isEmpty()) {
             return new ResponseData("上传失败，请选择文件");
         }
@@ -41,6 +47,7 @@ public class VideoController {
 
     @DeleteMapping(value = "delvideo")
     public ResponseData delVideo(@RequestParam String fileName){
+        PATH_FOLDER = pathUtil.getUploadPath();
         String reg = "(mp4|flv|avi|rm|rmvb|wmv)";
         Pattern p = Pattern.compile(reg);
         boolean isMpeg = p.matcher(fileName.split("\\.")[1]).find();

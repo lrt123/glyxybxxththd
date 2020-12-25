@@ -47,7 +47,7 @@ public class Login {
         }catch(Exception e){
             e.printStackTrace();
             try {
-                response.sendRedirect("http://www.baidu.com");
+                response.sendRedirect("/bx/index");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

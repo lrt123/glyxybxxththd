@@ -1,10 +1,8 @@
 package com.glyxybxhtxt.util;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * @Author lrt

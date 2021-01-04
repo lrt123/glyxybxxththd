@@ -4,10 +4,7 @@ import com.glyxybxhtxt.dataObject.Bxd;
 import com.glyxybxhtxt.dataObject.Ewm;
 import com.glyxybxhtxt.dataObject.Shy;
 import com.glyxybxhtxt.response.ResponseData;
-import com.glyxybxhtxt.service.BxdService;
-import com.glyxybxhtxt.service.EwmService;
-import com.glyxybxhtxt.service.QdbService;
-import com.glyxybxhtxt.service.ShyService;
+import com.glyxybxhtxt.service.*;
 import com.glyxybxhtxt.util.ParseUtil;
 import com.glyxybxhtxt.util.PathUtil;
 import com.glyxybxhtxt.util.AutoOrder;
@@ -37,12 +34,8 @@ import java.util.stream.Collectors;
 
 public class BxdServlet {
 
-    @Resource
-    PathUtil pathUtil;
-
     private static final long serialVersionUID = 1L;
-    //    private static String PATH_FOLDER = PathUtil.getUploadPath();
-    private static String PATH_FOLDER = "";
+    private static String PATH_FOLDER = PathUtil.getUploadPath();
     @Autowired
     private BxdService bs;
     @Autowired
@@ -55,6 +48,8 @@ public class BxdServlet {
     private QdbService qs;
     @Resource
     private ParseUtil parse;
+    @Autowired
+    private MsgPushService ybmsg;
 
 
 //    @Override
@@ -76,7 +71,6 @@ public class BxdServlet {
                             @RequestParam(value = "pjnr", required = false) String pjnr, @RequestParam(value = "pjzj", required = false) String pjzj,
                             @RequestParam(value = "bid", required = false) String bid, @RequestParam(value = "jid", required = false) String jid,
                             @RequestParam(value = "hc", required = false) String hc) throws IOException {
-        PATH_FOLDER = pathUtil.getUploadPath();
         if (StringUtils.isWhitespace(op) || StringUtils.isEmpty(op) || StringUtils.isBlank(op))
             return new ResponseData("2");
         switch (op) {
@@ -118,7 +112,6 @@ public class BxdServlet {
     @ResponseBody
     //整合返工和新增工单，返工要传jdr的jid和本单的id
     private ResponseData filebase64(String eid, String xxdd, String yysj, String bxlb, String bxnr, String sbrsj, String sbrxh, String sbr, String tp, String sp, String jid, String bid, String hc) throws IOException {
-        PATH_FOLDER = pathUtil.getUploadPath();
         Bxd bxd = new Bxd();
         String filename = "";
         if (tp != null && tp.length() != 0) {
@@ -206,6 +199,7 @@ public class BxdServlet {
             fgbxd.setShy1state(0);
             fgbxd.setShy2state(0);
             bs.fg(fgbxd);
+            ybmsg.msgpush(jid,"您有报修单需要返工，请及时处理！详细地点："+es.selxxwz(Integer.parseInt(eid)));
             return new ResponseData(true);
         }
     }

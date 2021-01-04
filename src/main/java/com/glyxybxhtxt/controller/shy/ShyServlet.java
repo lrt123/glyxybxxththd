@@ -4,6 +4,8 @@ import com.glyxybxhtxt.dataObject.Bxd;
 import com.glyxybxhtxt.dataObject.Qdb;
 import com.glyxybxhtxt.response.ResponseData;
 import com.glyxybxhtxt.service.BxdService;
+import com.glyxybxhtxt.service.EwmService;
+import com.glyxybxhtxt.service.MsgPushService;
 import com.glyxybxhtxt.service.QdbService;
 import com.glyxybxhtxt.util.ParseUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +33,10 @@ public class ShyServlet {
     private QdbService qs;
     @Autowired
     private ParseUtil parse;
+    @Autowired
+    private MsgPushService ybmsg;
+    @Autowired
+    private EwmService es;
 
     @RequestMapping("/ShyServlet")
     @ResponseBody
@@ -117,15 +123,31 @@ public class ShyServlet {
         if(StringUtils.equals(shystate,"2")){
             b.setHc("");
             b.setGs("");
+            ybmsg.msgpush(t.getJid(),"您填写的耗材和工时未通过审核，请及时修改！是在"+es.selxxwz(t.getEid())+"的报修单");
         }
         if(shyid.equals(t.getShy1())){
-            b.setShy1state(state);
+            if (StringUtils.equals(shystate, "2")) {
+                b.setShy1state(state);
+                b.setShy2state(state);
+            } else {
+                b.setShy1state(state);
+            }
             bs.upbxd1byshy(b);
         }else if(shyid.equals(t.getShy2())){
-            b.setShy2state(state);
+            if (StringUtils.equals(shystate, "2")) {
+                b.setShy1state(state);
+                b.setShy2state(state);
+            } else {
+                b.setShy2state(state);
+            }
             bs.upbxd2byshy(b);
         }else{
             return new ResponseData("审核员id无效");
+        }
+        //这里应该再查询一次数据库报修单
+        Bxd checkShyState = bs.selbxdforshyid(id);
+        if(StringUtils.equals("1",checkShyState.getShy1()) && StringUtils.equals("1",checkShyState.getShy2())){
+            ybmsg.msgpush(checkShyState.getJid(),"审核员审核通过，请尽快前往维修！详细地点："+es.selxxwz(checkShyState.getEid()));
         }
         return new ResponseData(true);
     }
@@ -146,6 +168,8 @@ public class ShyServlet {
         b.setId(id);
         if(shyid.equals(t.getShy1())){
             b.setState(state);
+            Boolean fsxx = state == 4 ? ybmsg.msgpush(t.getJid(),"您在"+es.selxxwz(t.getEid())+"维修的订单验收通过了！")
+                    : ybmsg.msgpush(t.getJid(),"您有订单验收不通过，请及时处理！报修单地点："+es.selxxwz(t.getEid())) ;
             bs.upbxdbyysr(b);
         }else{
             return new ResponseData("验收员id无效");

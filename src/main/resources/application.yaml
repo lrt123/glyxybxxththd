@@ -4,7 +4,7 @@ spring:
       max-request-size: 200MB
       max-file-size: 200MB
   application:
-    name: bx
+    name: glyxybxxt
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://47.115.177.141:3306/glmc?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
@@ -29,9 +29,13 @@ mybatis:
 
 
 server:
+  port: 8089
   tomcat:
     max-http-form-post-size: 80000000
-  servlet:
-    context-path: /bx
-  port: 80
-
+http_pool:
+  max_total: 200
+  default_max_per_route: 100
+  connect_timeout: 5000
+  connection_request_timeout: 1000
+  socket_timeout: 65000
+  validate_after_inactivity: 2000

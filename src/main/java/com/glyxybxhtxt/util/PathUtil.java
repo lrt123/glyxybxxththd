@@ -12,7 +12,7 @@ import java.io.File;
 @Component
 public class PathUtil {
 
-    public String getUploadPath() {
+    public static String getUploadPath() {
 //        File path;
 //        path = this.getClass().getResource("/").getPath();
 //        path = new File(ClassLoader.getSystemResource("").getPath());

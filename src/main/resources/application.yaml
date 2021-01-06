@@ -24,12 +24,10 @@ spring:
 mybatis:
   mapper-locations: classpath:mapping/*.xml
   type-aliases-package: com.glyxybxhtxt.dataobject
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 server:
-  port: 8089
+  port: 80
   tomcat:
     max-http-form-post-size: 80000000
 http_pool:

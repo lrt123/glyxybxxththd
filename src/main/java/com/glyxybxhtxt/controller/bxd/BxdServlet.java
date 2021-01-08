@@ -162,12 +162,27 @@ public class BxdServlet {
         if(StringUtils.isAllBlank(jid, bid)){
             //自动分配审核员
 //            -------------------------------------------------------------------------
-            //1、先查出所有符合当前校区的审核员
+            //1、先查出所有符合当前校区的签了到的审核员
             List<Shy> optimalShy = ss.selOptimalShy(Integer.parseInt(eid));
-            //做筛选，防止重复打卡而引发的只有一个合适的审核员
-            List<Shy> collect = optimalShy.stream().distinct().collect(Collectors.toList());
-            bxd.setShy1(collect.get(0).getYbid());
-            bxd.setShy2(collect.get(1).getYbid());
+            //具体审核员的个数
+            int shySize = optimalShy.size();
+            //如果符合条件的有多个,则随机分配
+            Random sjfpshy = new Random();
+            if(shySize > 1) {
+                bxd.setShy1(optimalShy.get(sjfpshy.nextInt(shySize)).getYbid());
+                bxd.setShy2(optimalShy.get(sjfpshy.nextInt(shySize)).getYbid());
+            }else if(shySize == 1){
+                //此时只找到一个在职审核员，另一个审核员职位就找今天已经签退的审核员
+                bxd.setShy1(optimalShy.get(0).getYbid());
+                List<Shy> qtshies = ss.selqtShy(Integer.parseInt(eid));
+                //随机分配的签退的审核员
+                bxd.setShy2(qtshies.get(sjfpshy.nextInt(qtshies.size())).getYbid());
+            }else{
+                //没有在职的审核员了，只能分配签退的审核员（这种情况应该不会发生，貌似每天都有审核员值班）
+                List<Shy> qtshies = ss.selqtShy(Integer.parseInt(eid));
+                bxd.setShy1(qtshies.get(sjfpshy.nextInt(qtshies.size())).getYbid());
+                bxd.setShy2(qtshies.get(sjfpshy.nextInt(qtshies.size())).getYbid());
+            }
             String zdpdResult = zdpd.zdpd(eid, bxlb);
             if(StringUtils.startsWith(zdpdResult, "6U@U6WX2^&nb6YIILV")){
                 bxd.setState(0);
@@ -176,7 +191,7 @@ public class BxdServlet {
             }
             bxd.setState(1);
             bxd.setJid(zdpdResult);
-
+            bxd.setJdsj(new Date());
             return bs.newbxdbysbr(bxd) == 1
                     ? new ResponseData(true)
                     : new ResponseData(false);
@@ -200,6 +215,7 @@ public class BxdServlet {
             fgbxd.setGs("");
             fgbxd.setShy1state(0);
             fgbxd.setShy2state(0);
+            fgbxd.setJdsj(new Date());
             bs.fg(fgbxd);
             ybmsg.msgpush(jid,"您有报修单需要返工，请及时处理！详细地点："+es.selxxwz(Integer.parseInt(eid)));
             return new ResponseData(true);

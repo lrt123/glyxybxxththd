@@ -81,7 +81,7 @@ public class AdminServlet {
             case "upewm" : return upewm(eid, qid, xxdd);
             case "bxnum" : return bxnum(state);
             case "adminindex" : return adminindex();
-            case "selOptimaljdrPC" : return selOptimaljdrPC(bxlb);
+            case "selOptimaljdrPC" : return selOptimaljdrPC(bid);
             case "selbxdbyadminpc" : return selbxdbyadminpc(bid, startime, endtime, xq, qid, jid, state, pj);
             default: return new ResponseData(false);
         }
@@ -249,11 +249,23 @@ public class AdminServlet {
             bs.del(id);
             responseData =  new ResponseData("success","删除成功");
         }else{
+            String bxdxxdd = es.selxxwz(currentBxd.getEid());
             b.setJid(jid);
-            if(!StringUtils.equals(jid,currentBxd.getJid())) ybmsg.msgpush(jid,
-                    "您有新的维修订单了，请及时处理！详细地点："+es.selxxwz(currentBxd.getEid()));
+            if(!StringUtils.equals(jid,currentBxd.getJid())){
+                ybmsg.msgpush(jid,
+                        "管理员为您分配新的维修订单了，请及时处理！详细地点："+ bxdxxdd);
+
+                b.setJdsj(new Date());
+            }
+
             b.setShy1(shy1);
+            if(!StringUtils.equals(shy1,currentBxd.getShy1()) && !StringUtils.equals(shy1,currentBxd.getShy2())) ybmsg.msgpush(shy1,
+                    "管理员为您分配新的订单审核了，请及时处理！详细地点："+ bxdxxdd);
+
             b.setShy2(shy2);
+            if(!StringUtils.equals(shy2,currentBxd.getShy2()) && !StringUtils.equals(shy2,currentBxd.getShy1())) ybmsg.msgpush(shy2,
+                    "管理员为您分配新的订单审核了，请及时处理！详细地点："+ bxdxxdd);
+
             b.setPj(pj);
             b.setPjnr(pjnr);
 //            b.setHc(hc);
@@ -284,8 +296,12 @@ public class AdminServlet {
         return new ResponseData(map);
     }
 
-    private ResponseData selOptimaljdrPC(String bxlb) {
+    private ResponseData selOptimaljdrPC(String bid) {
+        Integer bxdid = Integer.parseInt(bid);
+        Bxd selonebxd = bs.selonebxd(bxdid);
+        String bxlb = selonebxd.getBxlb();
         Map<String,Object> map = new HashMap<>();
+        //查询适合的接单人
         map.put("jlist", js.selOptimaljdrPC(bxlb));
         return new ResponseData(map);
     }

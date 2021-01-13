@@ -28,7 +28,7 @@ public class export {
         exportService.exportXlsx(id);
         if (fileName != null) {
             //设置文件路径
-            String realPath = "src/main/resources/static/";
+            String realPath = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\bx\\WEB-INF\\classes\\static";
             File file = new File(realPath , fileName);
             if (file.exists()) {
                 response.setContentType("application/octet-stream");//

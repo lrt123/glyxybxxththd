@@ -48,8 +48,8 @@ public class ExportServiceImpl implements ExportService {
     @Resource
     private ShyMapper shyMapper;
 
-    private static String filepath = "src/main/resources/static/repairProof.xls";
-    private static String exportpath = "src/main/resources/static/export.xls";
+    private static String filepath = "C:/Program Files/Apache Software Foundation/Tomcat 9.0/webapps/bx/WEB-INF/classes/static/repairProof.xls";
+    private static String exportpath = "C:/Program Files/Apache Software Foundation/Tomcat 9.0/webapps/bx/WEB-INF/classes/static/export.xls";
     @Override
     public void exportXlsx(String id) {
         //耗材填写开始行

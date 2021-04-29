@@ -21,7 +21,6 @@ spring:
 
 
 
-
 mybatis:
   mapper-locations: classpath:mapping/*.xml
   type-aliases-package: com.glyxybxhtxt.dataobject
@@ -30,7 +29,7 @@ mybatis:
 
 
 server:
-  port: 80
+  port: 8089
   tomcat:
     max-http-form-post-size: 80000000
 http_pool:

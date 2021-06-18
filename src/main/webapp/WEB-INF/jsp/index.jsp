@@ -2,21 +2,21 @@
 <%@page import="com.glyxybxhtxt.util.RealMe "%>
 <%@page import="com.glyxybxhtxt.util.GetInfo "%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+		 pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>桂医报修系统易班授权</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>桂医报修系统易班授权</title>
 </head>
 <body>
-	<%
+<%
 	if(session.getAttribute("eid")==null){
 		session.setAttribute("eid", request.getParameter("eid"));
 	}
 	Object o = session.getAttribute("realme");
 	if(o==null)
-	{ 
+	{
 		GetInfo getinfo = new GetInfo("3fe1ac4f66fe7bbc","3ba03e09d703867644388a54e90f4c6a","http://f.yiban.cn/iapp645713");
 		getinfo.getRealMe(request, response);
 //		RealMe rm = new RealMe();
@@ -31,7 +31,7 @@
 	if(o2!=null){
 		response.sendRedirect("/bx/Login");
 	}
-	
-	%>
+
+%>
 </body>
 </html>

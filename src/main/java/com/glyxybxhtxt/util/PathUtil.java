@@ -1,5 +1,6 @@
 package com.glyxybxhtxt.util;
 
+import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.FileNotFoundException;
  * @Version 1.0
  * 这里是保存路径配置，也就是上传文件保存的地方
  **/
+@Component
 public class PathUtil {
 
     public static String getUploadPath() {
